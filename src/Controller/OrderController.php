@@ -41,4 +41,9 @@ class OrderController
 
         $this->texter->send($textMessage);
     }
+
+    public function sayHello(string $message, int $nombre)
+    {
+        var_dump("HELLO $message, $nombre èmes visiteurs ce jour");
+    }
 }
