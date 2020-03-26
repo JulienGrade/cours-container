@@ -31,13 +31,13 @@ $controllerDefinition->addMethodCall('sayHello', [
 $container->setDefinition('order_controller', $controllerDefinition);
 */
 
-$container->register('order_controller', OrderController::class)
+$container->autowire('order_controller', OrderController::class)
     ->setPublic(true)
-    ->setArguments([
-        new Reference(Database::class),
-        new Reference(GmailMailer::class),
-        new Reference(SmsTexter::class)
-    ])
+    //->setArguments([
+    //    new Reference(Database::class),
+    //    new Reference(GmailMailer::class),
+    //    new Reference(SmsTexter::class)
+    //])
     ->addMethodCall('sayHello', [
         'Bonjour à tous',
         33
@@ -49,7 +49,10 @@ $databaseDefinition = new Definition(Database::class);
 $container->setDefinition('database', $databaseDefinition);
 //$container->set('database', new Database());*/
 
-$container->register('database', Database::class);
+/*$container->register('database', Database::class)
+        ->setAutowired(true);*/
+
+$container->autowire('database', Database::class);
 
 /*
 //$smsTexterDefinition = new Definition(SmsTexter::class);
@@ -61,7 +64,7 @@ $smsTexterDefinition->setArguments([
 ]);
 $container->setDefinition('texter.sms', $smsTexterDefinition);*/
 
-$container->register('texter.sms', SmsTexter::class)
+$container->autowire('texter.sms', SmsTexter::class)
     ->setArguments([
         'service.sms.com',
         'apikey1234'
@@ -74,19 +77,20 @@ $gmailMailerDefinition = new Definition(GmailMailer::class, [
 ]);
 $container->setDefinition('mailer.gmail', $gmailMailerDefinition);*/
 
-$container->register('mailer.gmail', GmailMailer::class)
+$container->autowire('mailer.gmail', GmailMailer::class)
     ->setArguments([
         '%mailer.gmail_user%',
         '%mailer.gmail_password%'
     ]);
 
-$container->register('mailer.smtp', SmtpMailer::class)->setArguments([
+$container->autowire('mailer.smtp', SmtpMailer::class)
+    ->setArguments([
     'smtp://localhost',
     'root',
     '123'
 ]);
 
-$container->register('texter.fax', FaxTexter::class);
+$container->autowire('texter.fax', FaxTexter::class);
 
 $container->setAlias('App\Controller\OrderController', 'order_controller')->setPublic(true);
 $container->setAlias('App\Database\Database', 'database');
