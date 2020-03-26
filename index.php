@@ -10,6 +10,8 @@ use Symfony\Component\DependencyInjection\Reference;
 use App\Mailer\SmtpMailer;
 use App\Texter\FaxTexter;
 use App\Texter\TexterInterface;
+use App\Texter\Logger;
+use App\DependencyInjection\LoggerCompilerPass;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -64,11 +66,14 @@ $smsTexterDefinition->setArguments([
 ]);
 $container->setDefinition('texter.sms', $smsTexterDefinition);*/
 
+$container->autowire('logger', Logger::class);
+
 $container->autowire('texter.sms', SmsTexter::class)
     ->setArguments([
         'service.sms.com',
         'apikey1234'
-    ]);
+    ])
+    ->addTag('with_logger');
 
 /*
 $gmailMailerDefinition = new Definition(GmailMailer::class, [
@@ -81,7 +86,8 @@ $container->autowire('mailer.gmail', GmailMailer::class)
     ->setArguments([
         '%mailer.gmail_user%',
         '%mailer.gmail_password%'
-    ]);
+    ])
+    ->addTag('with_logger');
 
 $container->autowire('mailer.smtp', SmtpMailer::class)
     ->setArguments([
@@ -100,6 +106,9 @@ $container->setAlias('App\Mailer\MailerInterface', 'mailer.gmail');
 $container->setAlias('App\Texter\SmsTexter', 'texter.sms');
 $container->setAlias('App\Texter\FaxTexter', 'texter.fax');
 $container->setAlias('App\Texter\TexterInterface', 'texter.sms');
+$container->setAlias('App\Logger', 'logger');
+
+$container->addCompilerPass(new LoggerCompilerPass);
 
 $container->compile();
 
