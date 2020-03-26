@@ -1,0 +1,49 @@
+parameters:
+  mailer.gmail_user: 'lior@gmail.com'
+  mailer.gmail_password: '123456'
+
+services:
+  _defaults:
+    autowire: true
+
+  order_controller:
+    class: App\Controller\OrderController
+    public: true
+    calls:
+      - method: sayHello
+        arguments: ["Bonjour à tous", 33]
+
+  database:
+    class: App\Database\Database
+
+  logger:
+    class: App\Texter\Logger
+
+  texter.sms:
+    class: App\texter\SmsTexter
+    arguments: ['service.sms.com', 'apikey1234']
+    tags: ['with_logger']
+
+  mailer.gmail:
+    class: App\Mailer\GmailMailer
+    arguments: ['%mailer.gmail_user%', '%mailer.gmail_password%']
+    tags: ['with_logger']
+
+  mailer.smtp:
+    class: App\Mailer\SmtpMailer
+    arguments: ['smtp://localhost', 'root', '123']
+
+  texter.fax:
+    class: App\Texter\FaxTexter
+
+  App\Controller\OrderController:
+    alias: order_controller
+    public: true
+  App\Database\Database: "@database"
+  App\Mailer\GmailMailer: "@mailer.gmail"
+  App\Mailer\SmtpMailer: "@mailer.smtp"
+  App\Mailer\MailerInterface: "@mailer.gmail"
+  App\Texter\SmsTexter: "@texter.sms"
+  App\Texter\FaxTexter: "@texter.fax"
+  App\Texter\TexterInterface: "@texter.sms"
+  App\Logger: "@logger"
