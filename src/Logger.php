@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Texter;
+namespace App;
 
 
 class Logger

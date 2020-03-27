@@ -1,0 +1,22 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  database:
+    class: App\Database\Database
+
+  logger:
+    class: App\Logger
+
+  mailer.gmail:
+    autoconfigure: true
+    class: App\Mailer\GmailMailer
+    arguments: ['%mailer.gmail_user%', '%mailer.gmail_password%']
+
+  mailer.smtp:
+    class: App\Mailer\SmtpMailer
+    arguments: ['smtp://localhost', 'root', '123']
+
+  texter.fax:
+    class: App\Texter\FaxTexter
